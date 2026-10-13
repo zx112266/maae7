@@ -1,0 +1,178 @@
+{
+    "sign_check_reward": {
+        "desc": "尝试识别签到奖励弹窗",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    179,
+                    36,
+                    536,
+                    100
+                ],
+                "expected": [
+                    "签到奖励"
+                ]
+            }
+        },
+        "timeout": 5000,
+        "rate_limit": 500,
+        "on_error": [
+            "sign_check_obstruction"
+        ],
+        "next": [
+            "sign_close_reward"
+        ]
+    },
+    "sign_close_reward": {
+        "desc": "关闭签到奖励弹窗",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1063,
+                    681
+                ]
+            }
+        },
+        "post_delay": 1500,
+        "post_wait_freezes": {
+            "time": 500,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ]
+        },
+        "next": [
+            "sign_check_obstruction"
+        ]
+    },
+    "sign_check_obstruction": {
+        "desc": "检测其他弹窗遮挡（深色状态）",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "method": 4,
+                "lower": [
+                    49,
+                    50,
+                    51
+                ],
+                "upper": [
+                    63,
+                    64,
+                    65
+                ],
+                "count": 100
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "on_error": [
+            "sign_check_lobby"
+        ],
+        "next": [
+            "sign_check_buff"
+        ]
+    },
+    "sign_check_buff": {
+        "desc": "识别增益效果弹窗",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    177,
+                    109,
+                    131,
+                    45
+                ],
+                "expected": [
+                    "增益效果"
+                ]
+            }
+        },
+        "timeout": 8000,
+        "rate_limit": 500,
+        "on_error": [
+            "sign_check_lobby"
+        ],
+        "next": [
+            "sign_close_buff"
+        ]
+    },
+    "sign_close_buff": {
+        "desc": "关闭增益效果弹窗，点击3次",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    327,
+                    16
+                ]
+            }
+        },
+        "repeat": 3,
+        "repeat_delay": 500,
+        "post_wait_freezes": {
+            "time": 500,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ]
+        },
+        "next": [
+            "sign_check_lobby"
+        ]
+    },
+    "sign_check_lobby": {
+        "desc": "检测大厅状态（浅色=无弹窗）",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "method": 4,
+                "lower": [
+                    190,
+                    198,
+                    202
+                ],
+                "upper": [
+                    204,
+                    212,
+                    216
+                ],
+                "count": 100
+            }
+        },
+        "timeout": 5000,
+        "rate_limit": 500,
+        "on_error": [
+            "sign_check_obstruction"
+        ],
+        "next": [
+            "sign_end"
+        ]
+    },
+    "sign_end": {
+        "desc": "签到流程结束",
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    }
+}
