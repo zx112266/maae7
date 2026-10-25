@@ -1,6 +1,7 @@
 {
     "interface_version": 2,
     "name": "maae7",
+    "icon": "icon.png",
     "description": "第七史诗自动化脚本，竞技场/讨伐/迷宫/骑士团/商店/签到/圣域/宠物小屋",
     "contact": "自用项目",
     "license": "MIT",

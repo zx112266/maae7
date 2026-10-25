@@ -1,7 +1,10 @@
 from pathlib import Path
 
 import shutil
+import subprocess
 import sys
+import tempfile
+import urllib.request
 
 try:
     import jsonc
@@ -113,6 +116,12 @@ def install_resource():
         install_path,
     )
 
+    # interface.json 里的 icon 字段是相对于 bundle 根目录的路径，
+    # 因此图标必须一起拷到 install/ 下，否则打包后界面会退回默认图标。
+    for pattern in ("*.png", "*.ico"):
+        for icon_file in (working_dir / "assets").glob(pattern):
+            shutil.copy2(icon_file, install_path / icon_file.name)
+
     with open(install_path / "interface.json", "r", encoding="utf-8") as f:
         interface = jsonc.load(f)
 
@@ -141,13 +150,8 @@ def install_agent():
     )
 
 
-def install_rename_exe():
-    """把 MFAAvalonia 的默认可执行文件名改成 interface.json 里的项目名。
-
-    MFAAvalonia 官方发布包里的可执行文件固定叫 MFAAvalonia(.exe)，
-    项目模板的打包流程只是原样拷贝，因此产物会保留这个默认名。
-    这里读取 assets/interface.json 的 name 字段作为最终的程序名。
-    """
+def get_project_name():
+    """读取 assets/interface.json 的 name，作为最终的程序名。"""
     interface_file = working_dir / "assets" / "interface.json"
     project_name = "MaaProject"
     try:
@@ -159,6 +163,17 @@ def install_rename_exe():
     # 去掉文件名里不允许的字符，避免生成非法路径
     for ch in '<>:"/\\|?*':
         project_name = project_name.replace(ch, "_")
+    return project_name
+
+
+def install_rename_exe():
+    """把 MFAAvalonia 的默认可执行文件名改成 interface.json 里的项目名。
+
+    MFAAvalonia 官方发布包里的可执行文件固定叫 MFAAvalonia(.exe)，
+    项目模板的打包流程只是原样拷贝，因此产物会保留这个默认名。
+    返回改名后的路径（供 install_set_icon 使用），未找到则返回 None。
+    """
+    project_name = get_project_name()
 
     if os_name == "win":
         candidates = [("MFAAvalonia.exe", f"{project_name}.exe")]
@@ -169,15 +184,61 @@ def install_rename_exe():
 
     for src_name, dst_name in candidates:
         src = install_path / src_name
-        if not src.exists():
-            print(f"Skip rename: {src_name} not found.")
-            continue
         dst = install_path / dst_name
         if dst.exists():
             print(f"Skip rename: {dst_name} already exists.")
+            return dst
+        if not src.exists():
+            print(f"Skip rename: {src_name} not found.")
             continue
         src.rename(dst)
         print(f"Renamed {src_name} -> {dst_name}")
+        return dst
+
+    return None
+
+
+RCEDIT_URL = "https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe"
+
+
+def install_set_icon(exe_path):
+    """把 assets/icon.ico 写进 exe 的图标资源（仅 Windows）。
+
+    MFAAvalonia.exe 的图标是编译进 PE 资源的，改文件名不会改变资源管理器里
+    显示的图标，只能用 rcedit 之类的工具改写。下载或改写失败都只打印提示，
+    不阻塞打包。
+    """
+    if os_name != "win":
+        print(f"Skip icon: only supported on win (current: {os_name}).")
+        return
+
+    ico = working_dir / "assets" / "icon.ico"
+    if not ico.exists():
+        print(f"Skip icon: {ico} not found.")
+        return
+    if exe_path is None or not exe_path.exists():
+        print("Skip icon: executable not found.")
+        return
+
+    try:
+        cache = Path(tempfile.gettempdir()) / "maae7-rcedit"
+        cache.mkdir(parents=True, exist_ok=True)
+        rcedit = cache / "rcedit-x64.exe"
+        if not (rcedit.exists() and rcedit.stat().st_size > 100_000):
+            urllib.request.urlretrieve(RCEDIT_URL, rcedit)
+    except Exception as e:  # noqa: BLE001 - 打包不应因此中断
+        print(f"Skip icon: failed to fetch rcedit ({e}).")
+        return
+
+    try:
+        subprocess.run(
+            [str(rcedit), str(exe_path), "--set-icon", str(ico)],
+            check=True,
+            timeout=120,
+        )
+        print(f"Set icon {ico.name} -> {exe_path.name}")
+    except Exception as e:  # noqa: BLE001 - 打包不应因此中断
+        print(f"Skip icon: rcedit failed ({e}).")
 
 
 if __name__ == "__main__":
@@ -185,6 +246,6 @@ if __name__ == "__main__":
     install_resource()
     install_chores()
     install_agent()
-    install_rename_exe()
+    install_set_icon(install_rename_exe())
 
     print(f"Install to {install_path} successfully.")
