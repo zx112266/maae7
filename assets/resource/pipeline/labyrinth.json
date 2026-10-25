@@ -3,9 +3,14 @@
         "desc": "迷宫入口",
         "recognition": "DirectHit",
         "action": "DoNothing",
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
+            "guard_disconnect",
+            "close_popup_labyrinth",
             "labyrinth_click_battle"
+        ],
+        "on_error": [
+            "close_popup_labyrinth"
         ]
     },
     "labyrinth_click_battle": {
@@ -28,10 +33,22 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
-            "labyrinth_click_labyrinth"
+            "labyrinth_click_tab_general"
+        ],
+        "on_error": [
+            "labyrinth_retry_battle"
+        ]
+    },
+    "labyrinth_retry_battle": {
+        "desc": "导航重试：等待后重新识别战斗按钮",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "post_delay": 1000,
+        "max_hit": 2,
+        "next": [
+            "labyrinth_click_battle"
         ]
     },
     "labyrinth_click_labyrinth": {
@@ -46,7 +63,8 @@
                     195
                 ],
                 "expected": [
-                    "迷宫"
+                    "迷宫",
+                    "迷宮"
                 ]
             }
         },
@@ -54,10 +72,22 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_click_city"
+        ],
+        "on_error": [
+            "labyrinth_retry_labyrinth"
+        ]
+    },
+    "labyrinth_retry_labyrinth": {
+        "desc": "导航重试：等待后重新识别迷宫标签",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "post_delay": 1000,
+        "max_hit": 2,
+        "next": [
+            "labyrinth_click_labyrinth"
         ]
     },
     "labyrinth_click_city": {
@@ -80,10 +110,22 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_click_team"
+        ],
+        "on_error": [
+            "labyrinth_retry_city"
+        ]
+    },
+    "labyrinth_retry_city": {
+        "desc": "导航重试：等待后重新识别提雷尔城",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "post_delay": 1000,
+        "max_hit": 2,
+        "next": [
+            "labyrinth_click_city"
         ]
     },
     "labyrinth_click_team": {
@@ -106,8 +148,7 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_click_battle_start"
         ]
@@ -132,7 +173,6 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 2000,
         "post_delay": 6000,
         "next": [
             "labyrinth_click_47"
@@ -165,7 +205,6 @@
                 ]
             }
         },
-        "pre_delay": 2000,
         "post_delay": 2000,
         "next": [
             "labyrinth_click_teleport1"
@@ -183,8 +222,7 @@
                 ]
             }
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_confirm_teleport"
         ]
@@ -216,8 +254,7 @@
                 ]
             }
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_click_44"
         ]
@@ -249,7 +286,6 @@
                 ]
             }
         },
-        "pre_delay": 2000,
         "post_delay": 2000,
         "next": [
             "labyrinth_click_teleport2"
@@ -269,8 +305,7 @@
                 ]
             }
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_confirm_teleport2"
         ]
@@ -302,7 +337,6 @@
                 ]
             }
         },
-        "pre_delay": 2000,
         "post_delay": 2000,
         "next": [
             "labyrinth_click_w_key"
@@ -320,7 +354,6 @@
                 ]
             }
         },
-        "pre_delay": 2000,
         "post_delay": 8000,
         "next": [
             "labyrinth_click_merchant"
@@ -342,8 +375,7 @@
         },
         "repeat": 3,
         "repeat_delay": 500,
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_merchant"
         ]
@@ -388,7 +420,7 @@
         ]
     },
     "labyrinth_check_item_row1": {
-        "desc": "检查第1行：强化石+购买次数1/1",
+        "desc": "检查第1行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -404,7 +436,9 @@
                                     103
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -446,8 +480,7 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_check_items_phase1"
@@ -491,14 +524,13 @@
                 ]
             }
         },
-        "pre_delay": 1000,
         "post_delay": 1000,
         "next": [
             "labyrinth_check_items_phase1"
         ]
     },
     "labyrinth_check_item_row2": {
-        "desc": "检查第2行：强化石+购买次数1/1",
+        "desc": "检查第2行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -514,7 +546,9 @@
                                     116
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -556,15 +590,14 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_check_items_phase1"
         ]
     },
     "labyrinth_check_item_row3": {
-        "desc": "检查第3行：强化石+购买次数1/1",
+        "desc": "检查第3行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -580,7 +613,9 @@
                                     102
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -622,15 +657,14 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_check_items_phase1"
         ]
     },
     "labyrinth_check_item_row4": {
-        "desc": "检查第4行：强化石+购买次数1/1",
+        "desc": "检查第4行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -646,7 +680,9 @@
                                     112
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -688,8 +724,7 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_scroll_items"
@@ -714,7 +749,6 @@
         },
         "repeat": 2,
         "repeat_delay": 1000,
-        "pre_delay": 1000,
         "post_delay": 2000,
         "next": [
             "labyrinth_check_items_phase2"
@@ -734,7 +768,7 @@
         ]
     },
     "labyrinth_check_item_row5": {
-        "desc": "检查第5行：强化石+购买次数1/1",
+        "desc": "检查第5行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -750,7 +784,9 @@
                                     109
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -792,15 +828,14 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_check_items_phase2"
         ]
     },
     "labyrinth_check_item_row6": {
-        "desc": "检查第6行：强化石+购买次数1/1",
+        "desc": "检查第6行：强化石或誓约书签 + 数量1/1",
         "recognition": {
             "type": "And",
             "param": {
@@ -816,7 +851,9 @@
                                     113
                                 ],
                                 "expected": [
-                                    "强化石"
+                                    "强化石",
+                                    "书签",
+                                    "書籤"
                                 ]
                             }
                         }
@@ -858,8 +895,7 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_check_buy_dialog",
             "labyrinth_exit_step1"
@@ -886,7 +922,6 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 1000,
         "post_delay": 3000,
         "next": [
             "labyrinth_exit_step2"
@@ -906,8 +941,7 @@
                 ]
             }
         },
-        "pre_delay": 1000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_exit_step3"
         ]
@@ -939,8 +973,7 @@
                 ]
             }
         },
-        "pre_delay": 2000,
-        "post_delay": 2000,
+        "post_delay": 800,
         "next": [
             "labyrinth_exit_step4"
         ]
@@ -972,7 +1005,6 @@
                 ]
             }
         },
-        "pre_delay": 2000,
         "post_delay": 3000,
         "next": [
             "labyrinth_back_to_lobby"
@@ -1031,13 +1063,74 @@
             "type": "Click",
             "param": {}
         },
-        "pre_delay": 1000,
-        "post_delay": 2000
+        "post_delay": 800
     },
     "labyrinth_done": {
         "desc": "流程结束",
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": []
+    },
+    "close_popup_labyrinth": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "labyrinth_entry"
+        ]
+    },
+    "labyrinth_click_tab_general": {
+        "desc": "点击战斗菜单的「一般」标签（防止停留在赛季页导致找不到副本）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    60,
+                    88,
+                    130,
+                    50
+                ],
+                "expected": [
+                    "一般",
+                    "般"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 1200,
+        "timeout": 8000,
+        "rate_limit": 500,
+        "next": [
+            "labyrinth_click_labyrinth"
+        ],
+        "on_error": [
+            "labyrinth_click_labyrinth"
+        ]
     }
 }

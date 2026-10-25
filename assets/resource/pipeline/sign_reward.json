@@ -4,20 +4,34 @@
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [1003, 638, 134, 53],
-                "expected": ["确认"]
+                "roi": [
+                    1003,
+                    638,
+                    134,
+                    53
+                ],
+                "expected": [
+                    "确认"
+                ]
             }
         },
         "action": {
             "type": "Click",
             "param": {
-                "target": [1052, 667]
+                "target": [
+                    1052,
+                    667
+                ]
             }
         },
         "timeout": 5000,
         "rate_limit": 500,
-        "on_error": ["sign_click_cancel"],
-        "next": ["sign_check_buff"]
+        "on_error": [
+            "sign_end"
+        ],
+        "next": [
+            "sign_check_buff"
+        ]
     },
     "sign_click_cancel": {
         "desc": "确认识别失败，点击取消位置3次",
@@ -25,26 +39,42 @@
         "action": {
             "type": "Click",
             "param": {
-                "target": [405, 19]
+                "target": [
+                    405,
+                    19
+                ]
             }
         },
         "repeat": 3,
         "repeat_delay": 500,
-        "next": ["sign_check_buff"]
+        "next": [
+            "sign_check_buff"
+        ]
     },
     "sign_check_buff": {
         "desc": "识别增益效果弹窗",
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [177, 109, 131, 45],
-                "expected": ["增益效果"]
+                "roi": [
+                    177,
+                    109,
+                    131,
+                    45
+                ],
+                "expected": [
+                    "增益效果"
+                ]
             }
         },
         "timeout": 8000,
         "rate_limit": 500,
-        "on_error": ["sign_buff_failed_click"],
-        "next": ["sign_close_buff"]
+        "on_error": [
+            "sign_end"
+        ],
+        "next": [
+            "sign_close_buff"
+        ]
     },
     "sign_buff_failed_click": {
         "desc": "增益效果识别失败，点击取消位置3次",
@@ -52,12 +82,17 @@
         "action": {
             "type": "Click",
             "param": {
-                "target": [405, 19]
+                "target": [
+                    405,
+                    19
+                ]
             }
         },
         "repeat": 3,
         "repeat_delay": 500,
-        "next": ["sign_end"]
+        "next": [
+            "sign_end"
+        ]
     },
     "sign_close_buff": {
         "desc": "关闭增益效果弹窗，点击3次",
@@ -65,20 +100,76 @@
         "action": {
             "type": "Click",
             "param": {
-                "target": [327, 16]
+                "target": [
+                    327,
+                    16
+                ]
             }
         },
         "repeat": 3,
         "repeat_delay": 500,
         "post_wait_freezes": {
             "time": 500,
-            "target": [0, 0, 1280, 720]
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ]
         },
-        "next": ["sign_end"]
+        "next": [
+            "sign_end"
+        ]
     },
     "sign_end": {
         "desc": "签到流程结束",
         "recognition": "DirectHit",
         "action": "DoNothing"
+    },
+    "sign_check_reward": {
+        "desc": "签到任务入口（对应 interface.json 的 entry=sign_check_reward）",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "guard_disconnect",
+            "close_popup_sign_reward",
+            "sign_check_confirm"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "close_popup_sign_reward",
+            "sign_end"
+        ]
+    },
+    "close_popup_sign_reward": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "sign_check_reward"
+        ]
     }
 }

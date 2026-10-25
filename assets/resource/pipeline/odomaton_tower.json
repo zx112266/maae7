@@ -1,0 +1,843 @@
+{
+    "odomaton_enter": {
+        "desc": "大厅点击「战斗」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1160,
+                    295,
+                    100,
+                    60
+                ],
+                "expected": [
+                    "战斗"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "guard_disconnect",
+            "close_popup_odomaton",
+            "odomaton_click_season"
+        ],
+        "on_error": [
+            "close_popup_odomaton",
+            "odomaton_exit"
+        ]
+    },
+    "close_popup_odomaton": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "odomaton_enter"
+        ]
+    },
+    "odomaton_click_season": {
+        "desc": "点击「赛季」标签",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    255,
+                    75,
+                    110,
+                    60
+                ],
+                "expected": [
+                    "赛季"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "odomaton_click_tower"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_click_tower": {
+        "desc": "点击「欧多马顿塔」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    645,
+                    165,
+                    175,
+                    60
+                ],
+                "expected": [
+                    "欧多马顿塔"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "odomaton_click_enter"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_click_enter": {
+        "desc": "点击「入场」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1100,
+                    630,
+                    115,
+                    50
+                ],
+                "expected": [
+                    "入场"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 1500,
+        "timeout": 8000,
+        "next": [
+            "odomaton_confirm_stage"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_confirm_stage": {
+        "desc": "确认从当前阶段开始",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    690,
+                    455,
+                    130,
+                    70
+                ],
+                "expected": [
+                    "确认"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2500,
+        "timeout": 8000,
+        "next": [
+            "odomaton_click_team"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_click_team": {
+        "desc": "点击「选择队伍」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1040,
+                    625,
+                    140,
+                    55
+                ],
+                "expected": [
+                    "选择队伍"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "odomaton_battle"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_pick_hero_1": {
+        "desc": "检查第1张卡是否为「英雄装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    150,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "英雄装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card1"
+        ]
+    },
+    "odomaton_pick_hero_2": {
+        "desc": "检查第2张卡是否为「英雄装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    520,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "英雄装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card2"
+        ]
+    },
+    "odomaton_pick_hero_3": {
+        "desc": "检查第3张卡是否为「英雄装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    890,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "英雄装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card3"
+        ]
+    },
+    "odomaton_pick_rare_1": {
+        "desc": "检查第1张卡是否为「稀有装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    150,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "稀有装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card1"
+        ]
+    },
+    "odomaton_pick_rare_2": {
+        "desc": "检查第2张卡是否为「稀有装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    520,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "稀有装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card2"
+        ]
+    },
+    "odomaton_pick_rare_3": {
+        "desc": "检查第3张卡是否为「稀有装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    890,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "稀有装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card3"
+        ]
+    },
+    "odomaton_pick_high_1": {
+        "desc": "检查第1张卡是否为「高级装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    150,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "高级装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card1"
+        ]
+    },
+    "odomaton_pick_high_2": {
+        "desc": "检查第2张卡是否为「高级装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    520,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "高级装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card2"
+        ]
+    },
+    "odomaton_pick_high_3": {
+        "desc": "检查第3张卡是否为「高级装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    890,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "高级装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card3"
+        ]
+    },
+    "odomaton_pick_normal_1": {
+        "desc": "检查第1张卡是否为「一般装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    150,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "一般装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card1"
+        ]
+    },
+    "odomaton_pick_normal_2": {
+        "desc": "检查第2张卡是否为「一般装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    520,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "一般装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card2"
+        ]
+    },
+    "odomaton_pick_normal_3": {
+        "desc": "检查第3张卡是否为「一般装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    890,
+                    185,
+                    220,
+                    45
+                ],
+                "expected": [
+                    "一般装置"
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card3"
+        ]
+    },
+    "odomaton_click_card1": {
+        "desc": "选中第1张装置卡",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    271,
+                    265
+                ]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "odomaton_decide"
+        ]
+    },
+    "odomaton_click_card2": {
+        "desc": "选中第2张装置卡",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    625,
+                    265
+                ]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "odomaton_decide"
+        ]
+    },
+    "odomaton_click_card3": {
+        "desc": "选中第3张装置卡",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1010,
+                    265
+                ]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "odomaton_decide"
+        ]
+    },
+    "odomaton_battle": {
+        "desc": "点击「战斗开始」并等待战斗结束（最多 25 层）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1085,
+                    625,
+                    115,
+                    55
+                ],
+                "expected": [
+                    "战斗开始"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 480000,
+        "rate_limit": 1000,
+        "max_hit": 25,
+        "next": [
+            "odomaton_dismiss_popup",
+            "odomaton_pick_hero_1",
+            "odomaton_pick_hero_2",
+            "odomaton_pick_hero_3",
+            "odomaton_pick_rare_1",
+            "odomaton_pick_rare_2",
+            "odomaton_pick_rare_3",
+            "odomaton_pick_high_1",
+            "odomaton_pick_high_2",
+            "odomaton_pick_high_3",
+            "odomaton_pick_normal_1",
+            "odomaton_pick_normal_2",
+            "odomaton_pick_normal_3",
+            "odomaton_pick_legendary_all",
+            "odomaton_click_conquer"
+        ],
+        "on_error": [
+            "odomaton_click_conquer",
+            "odomaton_exit",
+            "odomaton_end"
+        ]
+    },
+    "odomaton_decide": {
+        "desc": "点击「决定装置」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    680,
+                    615,
+                    160,
+                    60
+                ],
+                "expected": [
+                    "决定装置"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 10000,
+        "next": [
+            "odomaton_dismiss_popup",
+            "odomaton_next_floor"
+        ],
+        "on_error": [
+            "odomaton_next_floor"
+        ]
+    },
+    "odomaton_dismiss_popup": {
+        "desc": "关闭「英雄亲密度等级上升」弹窗",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    560,
+                    430,
+                    320,
+                    200
+                ],
+                "expected": [
+                    "轻触后关闭",
+                    "輕觸後關閉"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "odomaton_pick_hero_1",
+            "odomaton_pick_hero_2",
+            "odomaton_pick_hero_3",
+            "odomaton_pick_rare_1",
+            "odomaton_pick_rare_2",
+            "odomaton_pick_rare_3",
+            "odomaton_pick_high_1",
+            "odomaton_pick_high_2",
+            "odomaton_pick_high_3",
+            "odomaton_pick_normal_1",
+            "odomaton_pick_normal_2",
+            "odomaton_pick_normal_3",
+            "odomaton_pick_legendary_all",
+            "odomaton_decide",
+            "odomaton_next_floor"
+        ]
+    },
+    "odomaton_next_floor": {
+        "desc": "点击「下一层」回到战斗准备",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1115,
+                    630,
+                    125,
+                    50
+                ],
+                "expected": [
+                    "下一层",
+                    "下一層"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2500,
+        "timeout": 15000,
+        "next": [
+            "odomaton_dismiss_popup",
+            "odomaton_battle"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    },
+    "odomaton_exit": {
+        "desc": "退出塔回大厅",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    120,
+                    630,
+                    90,
+                    55
+                ],
+                "expected": [
+                    "返回"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 5000,
+        "max_hit": 3,
+        "next": [
+            "odomaton_flag_in_lobby",
+            "odomaton_exit"
+        ],
+        "on_error": [
+            "odomaton_end"
+        ]
+    },
+    "odomaton_flag_in_lobby": {
+        "desc": "确认已回到大厅",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1161,
+                    365,
+                    90,
+                    45
+                ],
+                "expected": [
+                    "竞技场"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "next": [
+            "odomaton_end"
+        ],
+        "on_error": [
+            "odomaton_end"
+        ]
+    },
+    "odomaton_end": {
+        "desc": "欧多马顿塔流程结束",
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "odomaton_pick_legendary_all": {
+        "desc": "兜底：三张卡都是「传说装置」时选第一个",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "roi": [
+                                    150,
+                                    185,
+                                    220,
+                                    45
+                                ],
+                                "expected": [
+                                    "传说装置"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "roi": [
+                                    520,
+                                    185,
+                                    220,
+                                    45
+                                ],
+                                "expected": [
+                                    "传说装置"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "roi": [
+                                    890,
+                                    185,
+                                    220,
+                                    45
+                                ],
+                                "expected": [
+                                    "传说装置"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "timeout": 20000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "odomaton_click_card1"
+        ]
+    },
+    "odomaton_click_conquer": {
+        "desc": "最后一层打完：点击「征服」按钮",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    420,
+                    380,
+                    440,
+                    220
+                ],
+                "expected": [
+                    "征服"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2500,
+        "timeout": 10000,
+        "max_hit": 1,
+        "next": [
+            "odomaton_exit"
+        ],
+        "on_error": [
+            "odomaton_exit"
+        ]
+    }
+}

@@ -452,3 +452,6 @@ tools/ImageCropper/**/*.png
 
 config
 debug
+# 本地 Agent / 工具目录（不属于游戏项目本体）
+.agents/
+.codex/

@@ -1,19 +1,27 @@
 {
     "detect_pet_house": {
-        "recognition": "OCR",
-        "expected": "宠物小屋",
-        "roi": [
-            773,
-            620,
-            74,
-            72
-        ],
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    773,
+                    620,
+                    74,
+                    72
+                ],
+                "expected": [
+                    "宠物小屋"
+                ]
+            }
+        },
         "timeout": 5000,
-        "retry_times": 1,
         "next": [
+            "guard_disconnect",
+            "close_popup_pet_house",
             "click_pet_house"
         ],
-        "failed_next": [
+        "on_error": [
+            "close_popup_pet_house",
             "pet_back_to_lobby"
         ]
     },
@@ -21,10 +29,12 @@
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
-            "target": [
-                804,
-                650
-            ]
+            "param": {
+                "target": [
+                    804,
+                    650
+                ]
+            }
         },
         "next": [
             "wait_pet_load"
@@ -43,15 +53,21 @@
         ]
     },
     "dot_check": {
-        "recognition": "TemplateMatch",
-        "template": "sanctuary_main/dot_forest.png",
-        "roi": [
-            772,
-            625,
-            40,
-            35
-        ],
-        "threshold": 0.82,
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    772,
+                    625,
+                    40,
+                    35
+                ],
+                "template": [
+                    "sanctuary_main/dot_forest.png"
+                ],
+                "threshold": 0.82
+            }
+        },
         "next": [
             "click_dot"
         ]
@@ -60,10 +76,12 @@
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
-            "target": [
-                858,
-                659
-            ]
+            "param": {
+                "target": [
+                    858,
+                    659
+                ]
+            }
         },
         "timeout": 3000,
         "rate_limit": 1000,
@@ -75,14 +93,20 @@
         ]
     },
     "judge_free": {
-        "recognition": "OCR",
-        "expected": "免费",
-        "roi": [
-            420,
-            597,
-            52,
-            30
-        ],
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    420,
+                    597,
+                    52,
+                    30
+                ],
+                "expected": [
+                    "免费"
+                ]
+            }
+        },
         "next": [
             "click_free"
         ]
@@ -91,10 +115,12 @@
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
-            "target": [
-                520,
-                609
-            ]
+            "param": {
+                "target": [
+                    520,
+                    609
+                ]
+            }
         },
         "timeout": 3000,
         "rate_limit": 1000,
@@ -106,14 +132,20 @@
         ]
     },
     "judge_result": {
-        "recognition": "OCR",
-        "expected": "领养结果",
-        "roi": [
-            561,
-            67,
-            152,
-            70
-        ],
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    561,
+                    67,
+                    152,
+                    70
+                ],
+                "expected": [
+                    "领养结果"
+                ]
+            }
+        },
         "next": [
             "click_blank"
         ]
@@ -122,10 +154,12 @@
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
-            "target": [
-                57,
-                88
-            ]
+            "param": {
+                "target": [
+                    57,
+                    88
+                ]
+            }
         },
         "repeat": 2,
         "repeat_delay": 500,
@@ -137,10 +171,12 @@
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
-            "target": [
-                317,
-                25
-            ]
+            "param": {
+                "target": [
+                    317,
+                    25
+                ]
+            }
         },
         "repeat": 3,
         "repeat_delay": 1000,
@@ -207,5 +243,36 @@
     "pet_task_end": {
         "recognition": "DirectHit",
         "action": "DoNothing"
+    },
+    "close_popup_pet_house": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "detect_pet_house"
+        ]
     }
 }

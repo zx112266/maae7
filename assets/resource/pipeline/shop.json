@@ -18,9 +18,12 @@
         "timeout": 5000,
         "rate_limit": 500,
         "on_error": [
+            "close_popup_shop",
             "shop_check_lobby"
         ],
         "next": [
+            "guard_disconnect",
+            "close_popup_shop",
             "shop_click_shop"
         ]
     },
@@ -296,6 +299,7 @@
         "timeout": 5000,
         "rate_limit": 500,
         "next": [
+            "shop_close_reward_popup",
             "shop_check_close"
         ]
     },
@@ -409,5 +413,66 @@
         "desc": "商店流程结束",
         "recognition": "DirectHit",
         "action": "DoNothing"
+    },
+    "close_popup_shop": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "shop_detect"
+        ]
+    },
+    "shop_close_reward_popup": {
+        "desc": "领奖环节的底部弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "max_hit": 2,
+        "next": [
+            "shop_check_close"
+        ]
     }
 }

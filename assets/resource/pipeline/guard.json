@@ -1,0 +1,26 @@
+{
+    "guard_disconnect": {
+        "desc": "断线守卫：检测断线/鉴权错误弹窗；命中则停止任务，避免继续盲点击误触「点击重试」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    300,
+                    120,
+                    680,
+                    520
+                ],
+                "expected": [
+                    "点击重试",
+                    "与服务器的连接已中断",
+                    "连接已中断",
+                    "登录错误",
+                    "platform_client_auth_error"
+                ]
+            }
+        },
+        "timeout": 1500,
+        "rate_limit": 500,
+        "action": "DoNothing"
+    }
+}

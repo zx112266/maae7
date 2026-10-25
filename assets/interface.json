@@ -79,6 +79,90 @@
         {
             "name": "关闭签到及各类弹窗",
             "entry": "sign_check_reward"
+        },
+        {
+            "name": "誓约召唤（免费优先）",
+            "entry": "summon_enter"
+        },
+        {
+            "name": "秘密商店购买誓约书签",
+            "entry": "secret_shop_enter",
+            "option": [
+                "秘密商店刷新次数"
+            ]
+        },
+        {
+            "name": "欧多马顿塔（赛季周本）",
+            "entry": "odomaton_enter"
         }
-    ]
+    ],
+    "option": {
+        "秘密商店刷新次数": {
+            "type": "select",
+            "label": "刷新次数上限",
+            "description": "没刷到誓约书签时，最多花天空石刷新几次。每次消耗 3 天空石。",
+            "default_case": "不刷新",
+            "cases": [
+                {
+                    "name": "不刷新",
+                    "label": "不刷新（只看一眼，不消耗天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "5",
+                    "label": "5 次（约 15 天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 5
+                        }
+                    }
+                },
+                {
+                    "name": "10",
+                    "label": "10 次（约 30 天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 10
+                        }
+                    }
+                },
+                {
+                    "name": "20",
+                    "label": "20 次（约 60 天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 20
+                        }
+                    }
+                },
+                {
+                    "name": "30",
+                    "label": "30 次（约 90 天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 30
+                        }
+                    }
+                },
+                {
+                    "name": "50",
+                    "label": "50 次（约 150 天空石）",
+                    "pipeline_override": {
+                        "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 50
+                        }
+                    }
+                }
+            ]
+        }
+    }
 }

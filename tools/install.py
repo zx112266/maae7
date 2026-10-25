@@ -141,10 +141,50 @@ def install_agent():
     )
 
 
+def install_rename_exe():
+    """把 MFAAvalonia 的默认可执行文件名改成 interface.json 里的项目名。
+
+    MFAAvalonia 官方发布包里的可执行文件固定叫 MFAAvalonia(.exe)，
+    项目模板的打包流程只是原样拷贝，因此产物会保留这个默认名。
+    这里读取 assets/interface.json 的 name 字段作为最终的程序名。
+    """
+    interface_file = working_dir / "assets" / "interface.json"
+    project_name = "MaaProject"
+    try:
+        with open(interface_file, "r", encoding="utf-8") as f:
+            project_name = (jsonc.load(f).get("name") or "").strip() or project_name
+    except FileNotFoundError:
+        print(f"Interface not found: {interface_file}, keep default executable name.")
+
+    # 去掉文件名里不允许的字符，避免生成非法路径
+    for ch in '<>:"/\\|?*':
+        project_name = project_name.replace(ch, "_")
+
+    if os_name == "win":
+        candidates = [("MFAAvalonia.exe", f"{project_name}.exe")]
+    elif os_name == "macos":
+        candidates = [("MFAAvalonia.app", f"{project_name}.app")]
+    else:
+        candidates = [("MFAAvalonia", project_name)]
+
+    for src_name, dst_name in candidates:
+        src = install_path / src_name
+        if not src.exists():
+            print(f"Skip rename: {src_name} not found.")
+            continue
+        dst = install_path / dst_name
+        if dst.exists():
+            print(f"Skip rename: {dst_name} already exists.")
+            continue
+        src.rename(dst)
+        print(f"Renamed {src_name} -> {dst_name}")
+
+
 if __name__ == "__main__":
     install_deps()
     install_resource()
     install_chores()
     install_agent()
+    install_rename_exe()
 
     print(f"Install to {install_path} successfully.")

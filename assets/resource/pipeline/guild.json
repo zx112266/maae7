@@ -17,9 +17,12 @@
         },
         "timeout": 5000,
         "on_error": [
+            "close_popup_guild",
             "guild_end"
         ],
         "next": [
+            "guard_disconnect",
+            "close_popup_guild",
             "guild_click_enter"
         ]
     },
@@ -71,6 +74,7 @@
             }
         },
         "next": [
+            "guild_close_reward_popup",
             "guild_click_reward"
         ]
     },
@@ -592,12 +596,123 @@
             }
         },
         "next": [
-            "guild_end"
+            "guild_flag_in_lobby"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "guild_press_back"
         ]
     },
     "guild_end": {
         "desc": "流程结束",
         "recognition": "DirectHit",
         "action": "DoNothing"
+    },
+    "guild_flag_in_lobby": {
+        "desc": "确认已回到大厅（底部导航）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    560,
+                    650,
+                    480,
+                    45
+                ],
+                "expected": [
+                    "德朗商店",
+                    "宠物小屋",
+                    "骑士团",
+                    "欧勒毕斯指南"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "next": [
+            "guild_end"
+        ],
+        "on_error": [
+            "guild_press_back"
+        ]
+    },
+    "guild_press_back": {
+        "desc": "按返回键退出公会页，最多 3 次",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "ClickKey",
+            "param": {
+                "key": 4
+            }
+        },
+        "post_delay": 2000,
+        "max_hit": 3,
+        "next": [
+            "guild_flag_in_lobby"
+        ],
+        "on_error": [
+            "guild_end"
+        ]
+    },
+    "close_popup_guild": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "guild_detect"
+        ]
+    },
+    "guild_close_reward_popup": {
+        "desc": "领奖环节的底部弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "max_hit": 2,
+        "next": [
+            "guild_click_reward"
+        ]
     }
 }

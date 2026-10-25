@@ -1,0 +1,467 @@
+{
+    "summon_enter": {
+        "desc": "大厅点击「召唤」入口",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1160,
+                    425,
+                    90,
+                    55
+                ],
+                "expected": [
+                    "召唤"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "guard_disconnect",
+            "close_popup_summon",
+            "summon_click_pact"
+        ],
+        "on_error": [
+            "close_popup_summon",
+            "summon_end"
+        ]
+    },
+    "close_popup_summon": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "summon_enter"
+        ]
+    },
+    "summon_click_pact": {
+        "desc": "点击「誓约召唤」（列表位置随活动浮动，故用文字识别定位）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    180,
+                    220,
+                    500
+                ],
+                "expected": [
+                    "约",
+                    "約",
+                    "誓约",
+                    "誓約"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "summon_free_10",
+            "summon_free_1",
+            "summon_end"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_free_10": {
+        "desc": "判断「召唤10次」是否为免费（消耗数字被替换成「免费」）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    995,
+                    630,
+                    115,
+                    55
+                ],
+                "expected": [
+                    "免费",
+                    "免費"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "summon_click_10"
+        ]
+    },
+    "summon_free_1": {
+        "desc": "判断「1次召唤」是否为免费",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    770,
+                    630,
+                    95,
+                    55
+                ],
+                "expected": [
+                    "免费",
+                    "免費"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "summon_click_1"
+        ]
+    },
+    "summon_click_10": {
+        "desc": "点击「召唤10次」（10 次免费时优先）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    630,
+                    180,
+                    60
+                ],
+                "expected": [
+                    "召喚10次",
+                    "召唤10次"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 3000,
+        "timeout": 8000,
+        "next": [
+            "summon_confirm_dialog",
+            "summon_skip_reveal",
+            "summon_result_back"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_click_1": {
+        "desc": "点击「1次召唤」（仅 1 次免费时）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    860,
+                    630,
+                    130,
+                    60
+                ],
+                "expected": [
+                    "1次召喚",
+                    "1次召唤"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 3000,
+        "timeout": 8000,
+        "next": [
+            "summon_confirm_dialog",
+            "summon_skip_reveal",
+            "summon_result_back"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_result_back": {
+        "desc": "召唤结果页点击「返回」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    60,
+                    620,
+                    220,
+                    80
+                ],
+                "expected": [
+                    "返回"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 20000,
+        "rate_limit": 1000,
+        "next": [
+            "summon_back_to_lobby"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_back_to_lobby": {
+        "desc": "按返回键退回大厅，最多 2 次",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "ClickKey",
+            "param": {
+                "key": 4
+            }
+        },
+        "post_delay": 2000,
+        "timeout": 3000,
+        "max_hit": 2,
+        "next": [
+            "summon_flag_in_lobby"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_flag_in_lobby": {
+        "desc": "确认已回到大厅",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1161,
+                    365,
+                    90,
+                    45
+                ],
+                "expected": [
+                    "竞技场"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "next": [
+            "summon_end"
+        ],
+        "on_error": [
+            "summon_back_to_lobby",
+            "summon_end"
+        ]
+    },
+    "summon_end": {
+        "desc": "召唤流程结束",
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "summon_confirm_dialog": {
+        "desc": "免费次数已用完的反向信号：付费召唤会弹「要用史诗书签进行召唤吗?」（免费召唤不弹）。命中即代表免费没了，应走取消分支",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    500,
+                    200,
+                    300,
+                    60
+                ],
+                "expected": [
+                    "进行召唤吗",
+                    "进行召唤嗎"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "summon_click_cancel"
+        ]
+    },
+    "summon_click_confirm": {
+        "desc": "点击确认框的「确认」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    680,
+                    500,
+                    120,
+                    60
+                ],
+                "expected": [
+                    "确认",
+                    "確認"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 3000,
+        "timeout": 8000,
+        "next": [
+            "summon_result_back"
+        ],
+        "on_error": [
+            "summon_result_back"
+        ]
+    },
+    "summon_click_cancel": {
+        "desc": "免费次数已用完的信号：点「取消」退出，绝不消耗书签",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    470,
+                    500,
+                    120,
+                    60
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 1500,
+        "timeout": 8000,
+        "next": [
+            "summon_back_to_lobby"
+        ],
+        "on_error": [
+            "summon_end"
+        ]
+    },
+    "summon_skip_reveal": {
+        "desc": "10 连召唤的逐张翻页展示：点右上角「跳过」直接进结果汇总",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1090,
+                    0,
+                    190,
+                    60
+                ],
+                "expected": [
+                    "跳过",
+                    "跳過"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 1500,
+        "timeout": 10000,
+        "rate_limit": 500,
+        "max_hit": 2,
+        "next": [
+            "summon_check_free_again",
+            "summon_result_back"
+        ],
+        "on_error": [
+            "summon_result_back"
+        ]
+    },
+    "summon_check_free_again": {
+        "desc": "结果汇总页：检查「再召喚一次」的消耗区是否仍为「免费」",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    955,
+                    632,
+                    90,
+                    45
+                ],
+                "expected": [
+                    "免费",
+                    "免費"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "action": "DoNothing",
+        "next": [
+            "summon_click_again"
+        ]
+    },
+    "summon_click_again": {
+        "desc": "继续免费召唤：点击「再召喚一次」（最多 3 轮）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    630,
+                    180,
+                    60
+                ],
+                "expected": [
+                    "再召喚一次",
+                    "再召唤一次",
+                    "再召喚",
+                    "再召唤"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "rate_limit": 500,
+        "max_hit": 3,
+        "next": [
+            "summon_confirm_dialog",
+            "summon_skip_reveal",
+            "summon_result_back"
+        ],
+        "on_error": [
+            "summon_result_back"
+        ]
+    }
+}

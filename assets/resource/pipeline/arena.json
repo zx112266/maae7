@@ -23,9 +23,12 @@
         "post_delay": 4000,
         "timeout": 5000,
         "on_error": [
+            "close_popup_arena",
             "arena_back_to_lobby"
         ],
         "next": [
+            "guard_disconnect",
+            "close_popup_arena",
             "arena_click_sub"
         ]
     },
@@ -316,6 +319,7 @@
         "timeout": 15000,
         "rate_limit": 1000,
         "on_error": [
+            "arena_check_buy_banner",
             "arena_back_to_lobby"
         ],
         "next": [
@@ -472,6 +476,7 @@
         "timeout": 15000,
         "rate_limit": 1000,
         "on_error": [
+            "arena_check_buy_banner",
             "arena_back_to_lobby"
         ],
         "next": [
@@ -628,6 +633,7 @@
         "timeout": 15000,
         "rate_limit": 1000,
         "on_error": [
+            "arena_check_buy_banner",
             "arena_back_to_lobby"
         ],
         "next": [
@@ -784,6 +790,7 @@
         "timeout": 15000,
         "rate_limit": 1000,
         "on_error": [
+            "arena_check_buy_banner",
             "arena_back_to_lobby"
         ],
         "next": [
@@ -940,6 +947,7 @@
         "timeout": 15000,
         "rate_limit": 1000,
         "on_error": [
+            "arena_check_buy_banner",
             "arena_back_to_lobby"
         ],
         "next": [
@@ -1045,7 +1053,9 @@
         ],
         "next": [
             "arena_flag_in_lobby",
-            "arena_click_back"
+            "arena_check_buy_banner",
+            "arena_click_back",
+            "arena_press_back"
         ]
     },
     "arena_flag_in_lobby": {
@@ -1097,11 +1107,99 @@
         ],
         "next": [
             "arena_back_to_lobby"
-        ]
+        ],
+        "max_hit": 6
     },
     "arena_end": {
         "desc": "流程结束",
         "recognition": "DirectHit",
         "action": "DoNothing"
+    },
+    "arena_press_back": {
+        "desc": "按返回键退出竞技场菜单，最多 4 次",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "ClickKey",
+            "param": {
+                "key": 4
+            }
+        },
+        "post_delay": 2000,
+        "max_hit": 4,
+        "next": [
+            "arena_flag_in_lobby"
+        ],
+        "on_error": [
+            "arena_press_back",
+            "arena_end"
+        ],
+        "timeout": 3000
+    },
+    "arena_check_buy_banner": {
+        "desc": "竞技场挑战次数用完会弹「购买旗帜」窗口：点取消并退出，绝不购买",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    430,
+                    120,
+                    420,
+                    120
+                ],
+                "expected": [
+                    "购买旗帜"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    531,
+                    549
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "arena_press_back"
+        ],
+        "on_error": [
+            "arena_press_back"
+        ],
+        "max_hit": 2
+    },
+    "close_popup_arena": {
+        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    560,
+                    1280,
+                    160
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "max_hit": 3,
+        "next": [
+            "guard_disconnect",
+            "arena_detect"
+        ]
     }
 }

@@ -1,26 +1,136 @@
 {
     "start_game": {
-        "desc": "启动游戏应用",
+        "desc": "启动游戏应用，等待公告页；网络慢时进入重试循环",
         "action": {
             "type": "StartApp",
             "param": {
                 "package": "com.zlongame.cn.epicseven.bilibili"
             }
         },
+        "timeout": 20000,
+        "rate_limit": 1000,
         "next": [
+            "start_check_lobby",
             "start_wait_game_load"
+        ],
+        "on_error": [
+            "start_check_network_retry",
+            "start_tap_continue",
+            "start_all_end"
+        ]
+    },
+    "start_check_lobby": {
+        "desc": "已登录（大厅底部导航可见），直接结束，不再等待公告页",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    560,
+                    650,
+                    480,
+                    45
+                ],
+                "expected": [
+                    "德朗商店",
+                    "宠物小屋",
+                    "骑士团",
+                    "欧勒毕斯指南"
+                ]
+            }
+        },
+        "timeout": 5000,
+        "rate_limit": 500,
+        "next": [
+            "start_all_end"
         ]
     },
     "start_wait_game_load": {
-        "desc": "等待游戏加载完成",
-        "timeout": 40000,
-        "pre_wait_freezes": 2000,
+        "desc": "等待公告页（活动专区/最新消息）；20 秒内没出现则走重试",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    370,
+                    85,
+                    450,
+                    45
+                ],
+                "expected": [
+                    "最新消息",
+                    "活动专区"
+                ]
+            }
+        },
+        "timeout": 20000,
         "rate_limit": 1000,
-        "on_error": [
-            "start_all_end"
-        ],
         "next": [
             "start_close_activity_pop"
+        ],
+        "on_error": [
+            "start_check_network_retry",
+            "start_tap_continue",
+            "start_all_end"
+        ]
+    },
+    "start_check_network_retry": {
+        "desc": "识别网络重连/错误弹窗，命中则点重试按钮（点识别结果中心）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    300,
+                    150,
+                    680,
+                    420
+                ],
+                "expected": [
+                    "重试",
+                    "重新连接",
+                    "确定"
+                ]
+            }
+        },
+        "timeout": 5000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 3000,
+        "max_hit": 8,
+        "next": [
+            "start_check_lobby",
+            "start_wait_game_load"
+        ],
+        "on_error": [
+            "start_tap_continue",
+            "start_all_end"
+        ]
+    },
+    "start_tap_continue": {
+        "desc": "兜底：点击屏幕中央跳过闪屏/登录等待，然后回到等待公告页",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    640,
+                    360
+                ]
+            }
+        },
+        "timeout": 20000,
+        "post_delay": 3000,
+        "max_hit": 8,
+        "next": [
+            "start_check_lobby",
+            "start_wait_game_load"
+        ],
+        "on_error": [
+            "start_check_network_retry",
+            "start_all_end"
         ]
     },
     "start_close_activity_pop": {
@@ -83,7 +193,7 @@
                 ]
             }
         },
-        "timeout": 10000,
+        "timeout": 15000,
         "rate_limit": 500,
         "on_error": [
             "start_all_end"
@@ -140,6 +250,38 @@
         },
         "post_delay": 1000,
         "next": [
+            "start_wait_lobby"
+        ],
+        "timeout": 30000,
+        "on_error": [
+            "start_all_end"
+        ]
+    },
+    "start_wait_lobby": {
+        "desc": "等待进入大厅（底部导航出现），最长 30 秒",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    560,
+                    650,
+                    480,
+                    45
+                ],
+                "expected": [
+                    "德朗商店",
+                    "宠物小屋",
+                    "骑士团",
+                    "欧勒毕斯指南"
+                ]
+            }
+        },
+        "timeout": 5000,
+        "rate_limit": 500,
+        "next": [
+            "start_all_end"
+        ],
+        "on_error": [
             "start_all_end"
         ]
     },
