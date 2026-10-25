@@ -1,6 +1,6 @@
 {
     "start_game": {
-        "desc": "启动游戏应用，等待公告页；网络慢时进入重试循环",
+        "desc": "启动游戏应用，交给 start_wait_boot 统一等待启动画面",
         "action": {
             "type": "StartApp",
             "param": {
@@ -8,19 +8,33 @@
             }
         },
         "timeout": 20000,
+        "post_delay": 5000,
+        "next": [
+            "start_wait_boot"
+        ],
+        "on_error": [
+            "start_wait_boot"
+        ]
+    },
+    "start_wait_boot": {
+        "desc": "启动等待器：45 秒内轮询「大厅 / 公告页 / 轻触画面 / 网络重连」，谁先出现就交给谁；45 秒没有任何目标就盲点一次再回来等（最多 4 轮 = 3 分钟）",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "timeout": 45000,
+        "max_hit": 4,
         "rate_limit": 1000,
         "next": [
             "start_check_lobby",
-            "start_wait_game_load"
+            "start_wait_game_load",
+            "start_tap_start",
+            "[JumpBack]start_check_network_retry"
         ],
         "on_error": [
-            "start_check_network_retry",
-            "start_tap_continue",
-            "start_all_end"
+            "start_tap_blind"
         ]
     },
     "start_check_lobby": {
-        "desc": "已登录（大厅底部导航可见），直接结束，不再等待公告页",
+        "desc": "已登录（大厅底部导航可见），直接结束；给已在大厅的热启动做快速通道",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -42,10 +56,102 @@
         "rate_limit": 500,
         "next": [
             "start_all_end"
+        ],
+        "on_error": [
+            "start_all_end"
         ]
     },
+    "start_tap_start": {
+        "desc": "点掉「轻触画面开始」；点完最多等 120 秒让公告页出来",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    300,
+                    1280,
+                    420
+                ],
+                "expected": [
+                    "轻触",
+                    "輕觸",
+                    "点击屏幕",
+                    "TAP TO START"
+                ]
+            }
+        },
+        "timeout": 120000,
+        "rate_limit": 1000,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1500,
+        "max_hit": 3,
+        "next": [
+            "start_wait_game_load",
+            "start_check_lobby"
+        ],
+        "on_error": [
+            "start_wait_game_load"
+        ]
+    },
+    "start_tap_blind": {
+        "desc": "兜底：一整轮（45 秒）启动画面一个都没认出来时盲点屏幕中心，点完回到等待器继续等，最多 4 次",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    640,
+                    360
+                ]
+            }
+        },
+        "timeout": 60000,
+        "post_delay": 4000,
+        "max_hit": 4,
+        "next": [
+            "start_wait_boot"
+        ],
+        "on_error": [
+            "start_wait_boot"
+        ]
+    },
+    "start_check_network_retry": {
+        "desc": "网络重连/登录错误弹窗，点重试；用 JumpBack 处理完回到 start_wait_boot 继续等",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    300,
+                    150,
+                    680,
+                    420
+                ],
+                "expected": [
+                    "点击重试",
+                    "重试",
+                    "重新连接",
+                    "登录错误"
+                ]
+            }
+        },
+        "timeout": 8000,
+        "rate_limit": 500,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 3000,
+        "max_hit": 3
+    },
     "start_wait_game_load": {
-        "desc": "等待公告页（活动专区/最新消息）；20 秒内没出现则走重试",
+        "desc": "等待公告页（最新消息/活动专区）；登录 + 公告拉取给 60 秒",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -61,80 +167,18 @@
                 ]
             }
         },
-        "timeout": 20000,
+        "timeout": 60000,
         "rate_limit": 1000,
         "next": [
             "start_close_activity_pop"
         ],
         "on_error": [
-            "start_check_network_retry",
-            "start_tap_continue",
-            "start_all_end"
-        ]
-    },
-    "start_check_network_retry": {
-        "desc": "识别网络重连/错误弹窗，命中则点重试按钮（点识别结果中心）",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    300,
-                    150,
-                    680,
-                    420
-                ],
-                "expected": [
-                    "重试",
-                    "重新连接",
-                    "确定"
-                ]
-            }
-        },
-        "timeout": 5000,
-        "rate_limit": 500,
-        "action": {
-            "type": "Click",
-            "param": {
-                "target": true
-            }
-        },
-        "post_delay": 3000,
-        "max_hit": 8,
-        "next": [
             "start_check_lobby",
-            "start_wait_game_load"
-        ],
-        "on_error": [
-            "start_tap_continue",
-            "start_all_end"
-        ]
-    },
-    "start_tap_continue": {
-        "desc": "兜底：点击屏幕中央跳过闪屏/登录等待，然后回到等待公告页",
-        "recognition": "DirectHit",
-        "action": {
-            "type": "Click",
-            "param": {
-                "target": [
-                    640,
-                    360
-                ]
-            }
-        },
-        "timeout": 20000,
-        "post_delay": 3000,
-        "max_hit": 8,
-        "next": [
-            "start_check_lobby",
-            "start_wait_game_load"
-        ],
-        "on_error": [
-            "start_check_network_retry",
             "start_all_end"
         ]
     },
     "start_close_activity_pop": {
-        "desc": "关闭活动专区弹窗",
+        "desc": "关闭活动专区弹窗（右上角 X）",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -149,11 +193,8 @@
                 ]
             }
         },
-        "timeout": 8000,
+        "timeout": 20000,
         "rate_limit": 500,
-        "on_error": [
-            "start_wait_before_agree"
-        ],
         "action": {
             "type": "Click",
             "param": {
@@ -163,8 +204,11 @@
                 ]
             }
         },
-        "post_delay": 500,
+        "post_delay": 800,
         "next": [
+            "start_wait_before_agree"
+        ],
+        "on_error": [
             "start_wait_before_agree"
         ]
     },
@@ -172,13 +216,17 @@
         "desc": "等待5秒后再识别同意条款",
         "recognition": "DirectHit",
         "action": "DoNothing",
+        "timeout": 15000,
         "post_delay": 5000,
         "next": [
+            "start_check_agree_terms"
+        ],
+        "on_error": [
             "start_check_agree_terms"
         ]
     },
     "start_check_agree_terms": {
-        "desc": "识别同意条款，使用特征文字",
+        "desc": "识别同意条款，使用特征文字；没有条款页就直接等大厅",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -193,13 +241,13 @@
                 ]
             }
         },
-        "timeout": 15000,
+        "timeout": 20000,
         "rate_limit": 500,
-        "on_error": [
-            "start_all_end"
-        ],
         "next": [
             "start_agree_terms_1"
+        ],
+        "on_error": [
+            "start_wait_lobby"
         ]
     },
     "start_agree_terms_1": {
@@ -254,11 +302,11 @@
         ],
         "timeout": 30000,
         "on_error": [
-            "start_all_end"
+            "start_wait_lobby"
         ]
     },
     "start_wait_lobby": {
-        "desc": "等待进入大厅（底部导航出现），最长 30 秒",
+        "desc": "等待进入大厅（底部导航出现），最长 45 秒",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -276,7 +324,7 @@
                 ]
             }
         },
-        "timeout": 5000,
+        "timeout": 45000,
         "rate_limit": 500,
         "next": [
             "start_all_end"
