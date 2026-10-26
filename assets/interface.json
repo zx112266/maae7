@@ -46,12 +46,20 @@
             "entry": "start_game"
         },
         {
-            "name": "竞技场自动战斗",
-            "entry": "arena_detect"
+            "name": "关闭签到及各类弹窗",
+            "entry": "sign_check_reward"
         },
         {
-            "name": "欧勒毕斯指南领取奖励",
-            "entry": "guide_detect"
+            "name": "圣域精灵之森照料",
+            "entry": "detect_san_entrance"
+        },
+        {
+            "name": "宠物小屋领养宠物",
+            "entry": "detect_pet_house"
+        },
+        {
+            "name": "商店领取免费物资",
+            "entry": "shop_detect"
         },
         {
             "name": "骑士团世界首领战",
@@ -66,24 +74,16 @@
             "entry": "labyrinth_entry"
         },
         {
-            "name": "宠物小屋领养宠物",
-            "entry": "detect_pet_house"
-        },
-        {
-            "name": "圣域精灵之森照料",
-            "entry": "detect_san_entrance"
-        },
-        {
-            "name": "商店领取免费物资",
-            "entry": "shop_detect"
-        },
-        {
-            "name": "关闭签到及各类弹窗",
-            "entry": "sign_check_reward"
+            "name": "竞技场自动战斗",
+            "entry": "arena_detect"
         },
         {
             "name": "誓约召唤（免费优先）",
             "entry": "summon_enter"
+        },
+        {
+            "name": "欧勒毕斯指南领取奖励",
+            "entry": "guide_detect"
         },
         {
             "name": "秘密商店购买誓约书签",
