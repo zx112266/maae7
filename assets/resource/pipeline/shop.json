@@ -163,15 +163,15 @@
         ]
     },
     "shop_check_free": {
-        "desc": "检查免费商品，没有则说明已购买",
+        "desc": "检查免费商品（只看价格区是否有「免费」）",
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
-                    304,
-                    323,
-                    192,
-                    73
+                    300,
+                    300,
+                    760,
+                    330
                 ],
                 "expected": [
                     "免费"
@@ -181,6 +181,8 @@
         "timeout": 5000,
         "rate_limit": 500,
         "on_error": [
+            "guard_disconnect",
+            "shop_check_limit",
             "shop_check_lobby"
         ],
         "next": [
@@ -188,15 +190,25 @@
         ]
     },
     "shop_click_free": {
-        "desc": "点击免费商品",
-        "recognition": "DirectHit",
+        "desc": "点击「免费」价格标签所在的商品（动态定位）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    300,
+                    300,
+                    760,
+                    330
+                ],
+                "expected": [
+                    "免费"
+                ]
+            }
+        },
         "action": {
             "type": "Click",
             "param": {
-                "target": [
-                    402,
-                    356
-                ]
+                "target": true
             }
         },
         "post_delay": 1500,
@@ -211,10 +223,15 @@
         },
         "next": [
             "shop_wait_purchase_confirm"
+        ],
+        "on_error": [
+            "guard_disconnect",
+            "shop_check_limit",
+            "shop_check_lobby"
         ]
     },
     "shop_wait_purchase_confirm": {
-        "desc": "等待购买确认界面",
+        "desc": "等待购买确认界面（同时兜住限购弹窗与掉线）",
         "recognition": "DirectHit",
         "action": "DoNothing",
         "pre_wait_freezes": {
@@ -226,10 +243,16 @@
                 720
             ]
         },
-        "timeout": 5000,
+        "timeout": 15000,
         "rate_limit": 500,
         "next": [
+            "guard_disconnect",
+            "shop_check_limit",
             "shop_check_purchase"
+        ],
+        "on_error": [
+            "guard_disconnect",
+            "shop_check_lobby"
         ]
     },
     "shop_check_purchase": {
@@ -251,10 +274,73 @@
         "timeout": 5000,
         "rate_limit": 500,
         "on_error": [
+            "guard_disconnect",
+            "shop_check_limit",
             "shop_check_lobby"
         ],
         "next": [
             "shop_click_purchase"
+        ]
+    },
+    "shop_check_limit": {
+        "desc": "识别「限购 / 该商品的可购买数量达到上限」弹窗",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    300,
+                    180,
+                    680,
+                    340
+                ],
+                "expected": [
+                    "可购买数量达到上限",
+                    "数量达到上限",
+                    "限购"
+                ]
+            }
+        },
+        "timeout": 2000,
+        "rate_limit": 400,
+        "action": "DoNothing",
+        "max_hit": 3,
+        "next": [
+            "shop_click_limit_close"
+        ],
+        "on_error": [
+            "shop_check_lobby"
+        ]
+    },
+    "shop_click_limit_close": {
+        "desc": "关闭限购弹窗（点击关闭在 y≈478）",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    380,
+                    420,
+                    520,
+                    180
+                ],
+                "expected": [
+                    "点击关闭"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "rate_limit": 400,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1200,
+        "next": [
+            "shop_check_lobby"
+        ],
+        "on_error": [
+            "shop_check_lobby"
         ]
     },
     "shop_click_purchase": {
@@ -299,8 +385,14 @@
         "timeout": 5000,
         "rate_limit": 500,
         "next": [
+            "guard_disconnect",
+            "shop_check_limit",
             "shop_close_reward_popup",
             "shop_check_close"
+        ],
+        "on_error": [
+            "guard_disconnect",
+            "shop_check_lobby"
         ]
     },
     "shop_check_close": {
@@ -322,6 +414,7 @@
         "timeout": 5000,
         "rate_limit": 500,
         "on_error": [
+            "guard_disconnect",
             "shop_check_lobby"
         ],
         "next": [
@@ -362,6 +455,7 @@
             "shop_end"
         ],
         "next": [
+            "guard_disconnect",
             "shop_flag_in_lobby",
             "[JumpBack]shop_click_back"
         ]
@@ -415,15 +509,15 @@
         "action": "DoNothing"
     },
     "close_popup_shop": {
-        "desc": "通用弹窗清理：识别「点击关闭」并点击；没有弹窗时不命中，不影响流程",
+        "desc": "通用弹窗清理：识别「点击关闭」并点击（覆盖奖励弹窗 y≈511 与限购弹窗 y≈478）",
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
                     0,
-                    560,
+                    430,
                     1280,
-                    160
+                    290
                 ],
                 "expected": [
                     "点击关闭"
