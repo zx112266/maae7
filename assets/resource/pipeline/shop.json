@@ -477,7 +477,8 @@
             }
         },
         "next": [
-            "shop_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "shop_click_back": {

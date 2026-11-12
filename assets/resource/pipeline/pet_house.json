@@ -213,7 +213,8 @@
             }
         },
         "next": [
-            "pet_task_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "pet_click_back": {

@@ -735,7 +735,8 @@
         "timeout": 3000,
         "rate_limit": 500,
         "next": [
-            "odomaton_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ],
         "on_error": [
             "odomaton_end"

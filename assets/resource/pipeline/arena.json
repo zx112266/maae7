@@ -1076,7 +1076,8 @@
         },
         "action": "DoNothing",
         "next": [
-            "arena_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "arena_click_back": {

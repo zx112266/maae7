@@ -1039,7 +1039,8 @@
             }
         },
         "next": [
-            "labyrinth_done"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "labyrinth_click_back": {

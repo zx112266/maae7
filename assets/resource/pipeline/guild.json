@@ -630,7 +630,8 @@
         "timeout": 3000,
         "rate_limit": 500,
         "next": [
-            "guild_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ],
         "on_error": [
             "guild_press_back"

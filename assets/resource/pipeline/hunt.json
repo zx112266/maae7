@@ -322,7 +322,8 @@
             }
         },
         "next": [
-            "hunt_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "hunt_click_back": {

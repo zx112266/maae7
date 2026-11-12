@@ -169,7 +169,8 @@
         },
         "action": "DoNothing",
         "next": [
-            "guide_end"
+            "[JumpBack]guard_profile_card",
+            "lobby_hold"
         ]
     },
     "guide_click_exit_again": {
