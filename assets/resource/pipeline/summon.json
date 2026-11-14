@@ -277,6 +277,7 @@
         "rate_limit": 500,
         "next": [
             "[JumpBack]guard_profile_card",
+            "[JumpBack]guard_profile_card_close",
             "lobby_hold"
         ],
         "on_error": [

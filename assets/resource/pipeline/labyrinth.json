@@ -1040,6 +1040,7 @@
         },
         "next": [
             "[JumpBack]guard_profile_card",
+            "[JumpBack]guard_profile_card_close",
             "lobby_hold"
         ]
     },

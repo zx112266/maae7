@@ -53,10 +53,7 @@
         },
         "post_delay": 1000,
         "rate_limit": 500,
-        "max_hit": 2,
-        "next": [
-            "guard_profile_card_close"
-        ]
+        "max_hit": 2
     },
     "guard_profile_card_close": {
         "desc": "资料卡兜底：点空白后还开着，就点底部「×点击关闭」",

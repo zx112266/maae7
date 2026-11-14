@@ -35,7 +35,6 @@
         ],
         "next": [
             "guard_disconnect",
-            "close_popup_guide_reward",
             "guide_click_claim"
         ]
     },
@@ -83,10 +82,10 @@
             "type": "OCR",
             "param": {
                 "roi": [
-                    590,
-                    509,
-                    102,
-                    41
+                    0,
+                    560,
+                    1280,
+                    160
                 ],
                 "expected": [
                     "点击关闭"
@@ -96,12 +95,7 @@
         "action": {
             "type": "Click",
             "param": {
-                "target": [
-                    635,
-                    531,
-                    1,
-                    1
-                ]
+                "target": true
             }
         },
         "pre_delay": 2000,
@@ -170,6 +164,7 @@
         "action": "DoNothing",
         "next": [
             "[JumpBack]guard_profile_card",
+            "[JumpBack]guard_profile_card_close",
             "lobby_hold"
         ]
     },
@@ -226,7 +221,7 @@
             }
         },
         "post_delay": 1000,
-        "max_hit": 3,
+        "max_hit": 2,
         "next": [
             "guard_disconnect",
             "guide_detect"
@@ -248,7 +243,7 @@
                 ]
             }
         },
-        "timeout": 2000,
+        "timeout": 6000,
         "rate_limit": 500,
         "action": {
             "type": "Click",
@@ -260,6 +255,10 @@
         "max_hit": 2,
         "next": [
             "guide_close_popup"
+        ],
+        "on_error": [
+            "guide_close_popup",
+            "guide_click_exit"
         ]
     }
 }
