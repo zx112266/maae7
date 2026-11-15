@@ -95,6 +95,10 @@
         {
             "name": "欧多马顿塔（赛季周本）",
             "entry": "odomaton_enter"
+        },
+        {
+            "name": "秘密商店刷书签",
+            "entry": "farm_secret_shop_enter"
         }
     ],
     "option": {
@@ -110,6 +114,9 @@
                     "pipeline_override": {
                         "secret_refresh": {
                             "enabled": false
+                        },
+                        "farm_secret_refresh": {
+                            "enabled": false
                         }
                     }
                 },
@@ -118,6 +125,10 @@
                     "label": "5 次（约 15 天空石）",
                     "pipeline_override": {
                         "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 5
+                        },
+                        "farm_secret_refresh": {
                             "enabled": true,
                             "max_hit": 5
                         }
@@ -130,6 +141,10 @@
                         "secret_refresh": {
                             "enabled": true,
                             "max_hit": 10
+                        },
+                        "farm_secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 10
                         }
                     }
                 },
@@ -138,6 +153,10 @@
                     "label": "20 次（约 60 天空石）",
                     "pipeline_override": {
                         "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 20
+                        },
+                        "farm_secret_refresh": {
                             "enabled": true,
                             "max_hit": 20
                         }
@@ -150,6 +169,10 @@
                         "secret_refresh": {
                             "enabled": true,
                             "max_hit": 30
+                        },
+                        "farm_secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 30
                         }
                     }
                 },
@@ -158,6 +181,10 @@
                     "label": "50 次（约 150 天空石）",
                     "pipeline_override": {
                         "secret_refresh": {
+                            "enabled": true,
+                            "max_hit": 50
+                        },
+                        "farm_secret_refresh": {
                             "enabled": true,
                             "max_hit": 50
                         }
